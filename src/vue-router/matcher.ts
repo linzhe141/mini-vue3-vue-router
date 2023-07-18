@@ -22,7 +22,7 @@ function createRouteRecordMatcher(record: Record, parent?: RouteRecordMatcher) {
 export function createRouterMatcher(routes: Route[]) {
   const matchers: RouteRecordMatcher[] = [];
 
-  // TODO 重名添加应该会去掉旧的
+  // TODO 重名添加应该会覆盖掉旧的
   function addRoute(route: Route, parent?: RouteRecordMatcher) {
     const record: Record = {
       path: route.path,
