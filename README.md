@@ -4,7 +4,7 @@
 
 - 路由描述的是 URL 与 UI 之间的映射关系，这种映射是单向的，即 URL 变化引起 UI 更新（**无需刷新页面**）。
 
-### Vue2 简易版 vue-router 的实现，包含如下功能：
+### Vue3 简易版 vue-router 的实现，包含如下功能：
 
 - `history 路由` 需要服务器支持，当找不到对应的资源后，需要返回 index.html
 - `RouterLink`
