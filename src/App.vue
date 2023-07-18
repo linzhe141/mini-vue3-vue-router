@@ -1,9 +1,10 @@
 <template>
   <nav>
+    <!-- <div>{{ reac.path }}</div> -->
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <router-view/>
+  <router-view />
 </template>
 
 <style>
@@ -28,3 +29,22 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+import { computed, ref, reactive } from 'vue';
+export default {
+  setup() {
+    const refValue = ref({ path: '/test' });
+    // const reac = reactive(computed(() => refValue.value.path));
+    // reactive({value: proxy({path: '/test'})})
+    const reac = reactive(refValue);
+    setTimeout(() => (refValue.value = { path: 'FDASFDAS' }), 3000);
+    const count = ref(1);
+    const obj = reactive(count);
+    window.__count = count;
+    window.__obj = obj;
+    return {
+      reac
+    };
+  }
+};
+</script>
