@@ -26,7 +26,8 @@ export interface Router {
   install: (app: App) => any;
   push: (to: string) => void;
 }
-export let routerKey = 'router' as const;
+// export let routerKey = 'router' as const;
+export const routerKey = 'router';
 export const routeKey = 'route';
 
 export type LocationValue = {
