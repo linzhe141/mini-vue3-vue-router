@@ -25,11 +25,11 @@ nav a {
   color: #2c3e50;
 }
 
-nav a.router-link-exact-active {
+a.router-link-exact-active {
   color: #42b983;
 }
 </style>
-<script>
+<script lang="ts">
 import { computed, ref, reactive } from 'vue';
 export default {
   setup() {
@@ -40,7 +40,9 @@ export default {
     setTimeout(() => (refValue.value = { path: 'FDASFDAS' }), 3000);
     const count = ref(1);
     const obj = reactive(count);
+    // @ts-ignore
     window.__count = count;
+    // @ts-ignore
     window.__obj = obj;
     return {
       reac

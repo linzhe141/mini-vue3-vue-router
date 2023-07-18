@@ -6,7 +6,7 @@ import {
   CurrentRoute
 } from './types/index';
 import { createRouterMatcher } from './matcher';
-import { App, inject, ref, shallowRef } from 'vue';
+import { App, inject, ref, shallowReactive, shallowRef } from 'vue';
 import { RouterLink } from './components/router-link';
 import { RouterView } from './components/router-view';
 
