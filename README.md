@@ -25,7 +25,7 @@
   const currentRoute = shallowRef(START_LOCATION_NORMALIZED);
   ...
   ...
-  install(app){
+  install(app: App) {
     const router = this;
     app.component('RouterLink', RouterLink);
     app.component('RouterView', RouterView);
@@ -33,18 +33,20 @@
     const reactiveRoute = {};
     for (const key in START_LOCATION_NORMALIZED) {
       Object.defineProperty(reactiveRoute, key, {
-        get: () => currentRoute.value[key as keyof CurrentRoute],
-        enumerable: true
+        get: () => currentRoute.value[key as keyof RouteInfo]
       });
     }
     app.provide(routeKey, reactiveRoute);
-    // 初始化的时候 默认进行一次跳转
+    // 初始化的时候 默认根据当前的url，进行一次跳转
     router.push(routerHistory.location.value);
     // 关联history的popStateHandle回调，当执行这个popStateHandle触发时
     // 改变currentRoute这个响应式数据
     routerHistory.listen((to: string) => {
       const targetLocation = matcher.resolve({ path: to });
-      currentRoute.value = targetLocation;
+      const from = currentRoute.value;
+      navigate(targetLocation, from).then(() => {
+        currentRoute.value = targetLocation;
+      });
     });
   }
   ```
