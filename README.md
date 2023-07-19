@@ -6,16 +6,14 @@
 
 ### Vue3 简易版 vue-router 的实现，包含如下功能：
 
-- `history 路由` 需要服务器支持，当找不到对应的资源后，需要返回 index.html
+- `history 路由` ：需要服务器支持，当找不到对应的资源后，需要返回 index.html
 - `RouterLink`
 - `RouterView`
-- `router.push` todo 如果该路由规则有 name，并且已经存在一个与之相同的名字，则会覆盖它
+- `router.push` ：todo 如果该路由规则有 name，并且已经存在一个与之相同的名字，则会覆盖它
 - `useRouter`
 - `useRoute`
-
-### TODO
-
-- beforeEach 路由导航守卫
+- `beforeEach:(to, from, next)=>void 路由导航守卫` ： 其中 next(): 进行的下一个钩子。如果全部钩子执行完了，则导航到 to` 但是最新的vue-router，这个next不是必须调用的了`
+  [vue-router:beforeEach文档](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
 
 ### history 路由大致原理：
 

@@ -1,14 +1,17 @@
 import { defineComponent, inject, h, provide } from 'vue';
-import { routeKey, CurrentRoute } from '../types/index';
+import { routeKey, RouteInfo } from '../types/index';
 
 export const RouterView = defineComponent({
   name: 'RouterView',
   setup() {
-    const route = inject(routeKey) as CurrentRoute;
+    // setup只会执行一次
+    const route = inject(routeKey) as RouteInfo;
     const depth = inject('depth', 0);
     // 让下一个RouterView的depth+1
     provide('depth', depth + 1);
+    // const matchedRoute = route.matched[depth];
     return () => {
+      //只会对setup返回的render函数进行依赖收集，从而触发重新渲染
       const matchedRoute = route.matched[depth];
       if (!matchedRoute) return null;
       const viewComponent = matchedRoute.component;

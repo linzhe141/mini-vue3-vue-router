@@ -22,9 +22,16 @@ export interface RouterOptions {
   history: History;
   routes: Route[];
 }
+export type BeforeEachHooks = (
+  to: RouteInfo,
+  form: RouteInfo,
+  next: Function
+) => any;
+
 export interface Router {
   install: (app: App) => any;
   push: (to: string) => void;
+  beforeEach: (hook: BeforeEachHooks) => any;
 }
 // export let routerKey = 'router' as const;
 export const routerKey = 'router';
@@ -37,7 +44,7 @@ export type LocationPath = {
   path: string;
 };
 
-export type CurrentRoute = {
+export type RouteInfo = {
   path: string;
   matched: Record[];
 };

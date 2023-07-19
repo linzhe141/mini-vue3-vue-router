@@ -1,5 +1,5 @@
 import { defineComponent, inject, h, watch, ref } from 'vue';
-import { Router, routerKey, CurrentRoute, routeKey } from '../types/index';
+import { Router, routerKey, RouteInfo, routeKey } from '../types/index';
 
 export const RouterLink = defineComponent({
   name: 'RouterLink',
@@ -11,7 +11,7 @@ export const RouterLink = defineComponent({
   },
   setup(props, { slots }) {
     const router = inject(routerKey) as Router;
-    const route = inject(routeKey) as CurrentRoute;
+    const route = inject(routeKey) as RouteInfo;
 
     const clickHandle = () => {
       router.push(props.to);
