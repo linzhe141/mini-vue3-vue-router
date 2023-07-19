@@ -34,7 +34,7 @@ function useCallback<T>() {
 //! }).then(() => console.log("resolve"));
 function runGuardQueue(guards: (() => Promise<void>)[]) {
   return guards.reduce(
-    //! 只有前一个 promise resolve掉，才能执行后面的then，所有用户必须要调用next
+    //! 只有前一个 promise resolve掉，才能执行后面的then，所以用户必须要调用next
     //! 但是最新的vue-router，这个next不是必须调用的了
     //! 最新文档 https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
     (promise, guard) => promise.then(() => guard()),
