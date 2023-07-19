@@ -100,7 +100,10 @@ export function createRouter(options: RouterOptions): Router {
       // 改变currentRoute这个响应式数据
       routerHistory.listen((to: string) => {
         const targetLocation = matcher.resolve({ path: to });
-        currentRoute.value = targetLocation;
+        const from = currentRoute.value;
+        navigate(targetLocation, from).then(() => {
+          currentRoute.value = targetLocation;
+        });
       });
     }
   };
