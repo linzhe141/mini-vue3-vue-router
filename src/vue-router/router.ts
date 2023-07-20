@@ -31,9 +31,15 @@ function useCallback<T>() {
 //! tips
 //! new Promise((resolve) => {
 //!   console.log(32132112);
-//!   resolve(); //! 如果没有resolve，那么这个promise一直是pending，then和catch就一直不会执行
+//!   resolve(); //! 如果没有resolve、reject或报错，那么这个promise一直是pending，then和catch就一直不会执行
 //! }).then(() => console.log("resolve"));
 function runGuardQueue(guards: (() => Promise<void>)[]) {
+  //! 本质就是一直给Promise.resolve()加then方法
+  //! Promise.resolve() // 初始值
+  //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第一次迭代
+  //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第二次迭代
+
+  //! 最后的处理   .then(res => console.log('res')).catch(error=>console.log(error))
   return guards.reduce(
     //! 只有前一个 promise resolve掉，才能执行后面的then，所以用户必须要调用next
     //! 但是最新的vue-router，这个next不是必须调用的了
