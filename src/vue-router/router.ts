@@ -72,7 +72,7 @@ function guardToPromise(
 
       // next(fnReturn);
       //! 源码还包装了一层 Promise,因为这个hook可以支持异步
-      //! 用户在hook中，可以做一下异步逻辑，比如异步判断用户状态，更加状态做响应的调整
+      //! 用户在hook中，可以做异步逻辑，比如异步判断用户状态，根据状态做相应的调整
       Promise.resolve(fnReturn).then(next);
     });
 }
