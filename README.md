@@ -9,11 +9,15 @@
 - `history 路由` ：需要服务器支持，当找不到对应的资源后，需要返回 index.html
 - `RouterLink`
 - `RouterView`
-- `router.push` ：todo 如果该路由规则有 name，并且已经存在一个与之相同的名字，则会覆盖它
+- `router.push`
 - `useRouter`
 - `useRoute`
 - `beforeEach:(to, from, next)=>void 路由导航守卫` ： 其中 next(): 进行的下一个钩子。如果全部钩子执行完了，则导航到 to` 但是最新的vue-router，这个next不是必须调用的了`
-  [vue-router:beforeEach文档](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
+  [vue-router:beforeEach 文档](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
+
+### TODO
+
+- `addRoute` ：如果该路由规则有 name，并且已经存在一个与之相同的名字，则会覆盖它
 
 ### history 路由大致原理：
 
@@ -21,33 +25,4 @@
 - 并通过 popstate 事件，监听用户点击浏览器前进后退,来改变 `currentRoute`
 - 当调用 router.push 时，手动改变 `currentRoute`
 - 把路由的状态(`currentRoute`)，通过 `shallowRef(START_LOCATION_NORMALIZED：初始值)` 定义成响应式数据
-  ```js
-  const currentRoute = shallowRef(START_LOCATION_NORMALIZED);
-  ...
-  ...
-  install(app: App) {
-    const router = this;
-    app.component('RouterLink', RouterLink);
-    app.component('RouterView', RouterView);
-    app.provide(routerKey, router);
-    const reactiveRoute = {};
-    for (const key in START_LOCATION_NORMALIZED) {
-      Object.defineProperty(reactiveRoute, key, {
-        get: () => currentRoute.value[key as keyof RouteInfo]
-      });
-    }
-    app.provide(routeKey, reactiveRoute);
-    // 初始化的时候 默认根据当前的url，进行一次跳转
-    router.push(routerHistory.location.value);
-    // 关联history的popStateHandle回调，当执行这个popStateHandle触发时
-    // 改变currentRoute这个响应式数据
-    routerHistory.listen((to: string) => {
-      const targetLocation = matcher.resolve({ path: to });
-      const from = currentRoute.value;
-      navigate(targetLocation, from).then(() => {
-        currentRoute.value = targetLocation;
-      });
-    });
-  }
-  ```
 - 这样当改变这个`currentRoute` 的时候，RouterView 会对 currentRoute 进行依赖收集，就可以响应式更新了，即 URL 变化引起 UI 更新（**无需刷新页面**）

@@ -4,7 +4,8 @@ import {
   routerKey,
   routeKey,
   RouteInfo,
-  BeforeEachHooks
+  BeforeEachHooks,
+  Route
 } from './types/index';
 import { createRouterMatcher } from './matcher';
 import { App, inject, ref, shallowReactive, shallowRef } from 'vue';
@@ -47,12 +48,24 @@ function guardToPromise(
   from: RouteInfo
 ) {
   return () =>
-    new Promise<void>(resolve => {
-      const next = () => resolve();
-      guard(to, from, next);
+    new Promise<void>((resolve, reject) => {
+      const next = (valid: boolean | undefined) => {
+        if (valid === false) {
+          reject('Invalid navigation guard');
+        }
+        resolve();
+      };
+      //! old 用户 需要手动执行 next
+      //! guard(to, from, next);
 
-      // let fnReturn = guard(to, from, next);
-      // return Promise.resolve(fnReturn).then(next);
+      let fnReturn = guard(to, from);
+      //! 用户的每一个hooks就不用手动调用next了
+      //! 如果用户的返回值是false，就reject，那么runGuardQueue就会被中断了
+      //! 因为这个 runGuardQueue 只对 resolve(promise.then) 进行迭代
+      next(fnReturn);
+
+      //? 源码还包装了一层 Promise,可能是为了做精度更高的异常拦截?
+      // Promise.resolve(fnReturn).then(next);
     });
 }
 
@@ -65,10 +78,12 @@ export function createRouter(options: RouterOptions): Router {
   function push(to: string) {
     const targetLocation = matcher.resolve({ path: to });
     const from = currentRoute.value;
-    navigate(targetLocation, from).then(() => {
-      routerHistory.push(targetLocation.path);
-      currentRoute.value = targetLocation;
-    });
+    navigate(targetLocation, from)
+      .then(() => {
+        routerHistory.push(targetLocation.path);
+        currentRoute.value = targetLocation;
+      })
+      .catch(error => console.log(error));
   }
   // 执行导航守卫
   function navigate(to: RouteInfo, from: RouteInfo) {
@@ -77,6 +92,10 @@ export function createRouter(options: RouterOptions): Router {
       guards.push(guardToPromise(guard, to, from));
     }
     return runGuardQueue(guards);
+  }
+
+  function addRoute(route: Route) {
+    matcher.addRoute(route);
   }
   return {
     //! ps “导航”表示路由正在发生改变。
@@ -101,9 +120,11 @@ export function createRouter(options: RouterOptions): Router {
       routerHistory.listen((to: string) => {
         const targetLocation = matcher.resolve({ path: to });
         const from = currentRoute.value;
-        navigate(targetLocation, from).then(() => {
-          currentRoute.value = targetLocation;
-        });
+        navigate(targetLocation, from)
+          .then(() => {
+            currentRoute.value = targetLocation;
+          })
+          .catch(error => console.log(error));
       });
     }
   };

@@ -25,12 +25,13 @@ export interface RouterOptions {
 export type BeforeEachHooks = (
   to: RouteInfo,
   form: RouteInfo,
-  next: Function
+  next?: Function
 ) => any;
 
 export interface Router {
   install: (app: App) => any;
   push: (to: string) => void;
+  // addRoute: (route: Route) => void;
   beforeEach: (hook: BeforeEachHooks) => any;
 }
 // export let routerKey = 'router' as const;
