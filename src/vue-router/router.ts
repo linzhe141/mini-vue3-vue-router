@@ -38,6 +38,7 @@ function runGuardQueue(guards: (() => Promise<void>)[]) {
   //! Promise.resolve() // 初始值
   //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第一次迭代
   //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第二次迭代
+  //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第三次迭代
 
   //! 最后的处理   .then(res => console.log('res')).catch(error=>console.log(error))
   return guards.reduce(
@@ -68,10 +69,11 @@ function guardToPromise(
       //! 用户的每一个hooks就不用手动调用next了
       //! 如果用户的返回值是false，就reject，那么runGuardQueue就会被中断了
       //! 因为这个 runGuardQueue 只对 resolve(promise.then) 进行迭代
-      next(fnReturn);
 
-      //? 源码还包装了一层 Promise,可能是为了做精度更高的异常拦截?
-      // Promise.resolve(fnReturn).then(next);
+      // next(fnReturn);
+      //! 源码还包装了一层 Promise,因为这个hook可以支持异步
+      //! 用户在hook中，可以做一下异步逻辑，比如异步判断用户状态，更加状态做响应的调整
+      Promise.resolve(fnReturn).then(next);
     });
 }
 

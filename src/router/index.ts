@@ -49,14 +49,15 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 });
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
   console.log('beforeEach 1--->to', to);
   console.log('beforeEach 1--->from', from);
+  // await 1;
   //! 最新 vue-router  return 和next参数不能同时存在
   //! 1、当eturn 一个有意义的值时，就不能再这个hook函数写next参数
   //! 否则会报错 [Vue Router warn]: The "next" callback was never called inside of
   //! 2、当写了 next 参数时，这个hook中就必须得调用 next函数 否则这次导航就不会到to
-  return true;
+  // return false;
   // next();
 });
 router.beforeEach((to, from, next) => {
