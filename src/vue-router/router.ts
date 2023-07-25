@@ -34,6 +34,7 @@ function useCallback<T>() {
 //!   resolve(); //! 如果没有resolve、reject或报错，那么这个promise一直是pending，then和catch就一直不会执行
 //! }).then(() => console.log("resolve"));
 function runGuardQueue(guards: (() => Promise<void>)[]) {
+  //! mdn 有详细描述 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_promises
   //! 本质就是一直给Promise.resolve()加then方法
   //! Promise.resolve() // 初始值
   //!   .then(() => new Promise((resolve, reject) => {resolve()/reject()})) //第一次迭代
@@ -42,7 +43,7 @@ function runGuardQueue(guards: (() => Promise<void>)[]) {
 
   //! 最后的处理   .then(res => console.log('res')).catch(error=>console.log(error))
   return guards.reduce(
-    //! 只有前一个 promise resolve掉，才能执行后面的then，所以用户必须要调用next
+    //! 只有前一个 promise resolve掉，才能执行后面的then
     //! 但是最新的vue-router，这个next不是必须调用的了
     //! 最新文档 https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
     (promise, guard) => promise.then(() => guard()),
